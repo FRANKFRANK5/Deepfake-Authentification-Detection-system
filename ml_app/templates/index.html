@@ -1,0 +1,1491 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>DETECTIFY AI — DeepFake Detection</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8" />
+    <meta property="twitter:card" content="summary_large_image" />
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.png' %}" />
+
+    <!-- jQuery & UI -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" />
+
+    <!-- Static files -->
+    <link rel="stylesheet" href="{% static 'css/animate.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/teleport.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/index.css' %}" />
+    <link rel="stylesheet" href="{% static 'bootstrap/bootstrap.min.css' %}" />
+
+    <style>
+        /* ============================================
+           ROOT VARIABLES – BLUE THEME (HAKUNA BADILIKO)
+           ============================================ */
+        :root {
+            --dl-color-gray-500: #595959;
+            --dl-color-gray-700: #999999;
+            --dl-color-gray-900: #d9d9d9;
+            --dl-color-gray-black: #000000;
+            --dl-color-gray-white: #ffffff;
+
+            --dl-size-size-large: 144px;
+            --dl-size-size-small: 48px;
+            --dl-size-size-medium: 96px;
+            --dl-size-size-xlarge: 192px;
+            --dl-size-size-xsmall: 16px;
+            --dl-size-size-xxlarge: 288px;
+            --dl-size-size-maxwidth: 1400px;
+            --dl-radius-radius-round: 50%;
+            --dl-radius-radius-radius2: 2px;
+            --dl-radius-radius-radius4: 4px;
+            --dl-radius-radius-radius8: 8px;
+
+            --dl-space-space-unit: 16px;
+            --dl-space-space-halfunit: 8px;
+            --dl-space-space-oneandhalfunits: 24px;
+            --dl-space-space-twounits: 32px;
+            --dl-space-space-threeunits: 48px;
+            --dl-space-space-fourunits: 64px;
+            --dl-space-space-fiveunits: 80px;
+            --dl-space-space-sixunits: 96px;
+
+            /* ----- BLUE THEME COLORS ----- */
+            --dl-color-primary-100: #002b80;
+            --dl-color-primary-300: #0044cc;
+            --dl-color-primary-500: #0066ff;
+            --dl-color-primary-700: #4d9eff;
+
+            --dl-color-success-300: #199033;
+            --dl-color-success-500: #32a94c;
+            --dl-color-success-700: #4cc366;
+
+            --dl-color-danger-300: #a22020;
+            --dl-color-danger-500: #bf2626;
+            --dl-color-danger-700: #e14747;
+
+            --dl-color-custom-accent1: #cce4ff;
+            --dl-color-custom-primary1: #0055dd;
+            --dl-color-custom-primary2: #003399;
+            --dl-color-custom-secondary1: #a6c8ff;
+            --dl-color-custom-neutral-dark: #0b0e1a;
+            --dl-color-custom-neutral-light: #f0f5ff;
+        }
+
+        /* ============================================
+           GLOBAL RESET & BASE (HAKUNA BADILIKO)
+           ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0b0e1a, #141b2b, #1a2332);
+            color: #ffffff;
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: #00aaff;
+            transition: color 0.3s;
+        }
+        a:hover {
+            color: #4d9eff;
+        }
+
+        /* ============================================
+           BUTTONS (HAKUNA BADILIKO)
+           ============================================ */
+        .buttonFilled {
+            display: inline-block;
+            padding: 0.7rem 2rem;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #ffffff;
+            background: linear-gradient(135deg, #0066ff, #00aaff);
+            box-shadow: 0 4px 20px rgba(0, 100, 255, 0.3);
+            border: none;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .buttonFilled:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0, 100, 255, 0.5);
+            background: linear-gradient(135deg, #0044cc, #0088ee);
+        }
+        /* --- GLOW BUTTON (NYONGEZA) --- */
+        .buttonFilled.glow {
+            animation: pulseGlow 2s infinite;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 100, 255, 0.4), 0 0 60px rgba(0, 100, 255, 0.2); }
+            50% { box-shadow: 0 0 30px rgba(0, 100, 255, 0.7), 0 0 80px rgba(0, 100, 255, 0.3); }
+        }
+
+        .buttonOutline {
+            display: inline-block;
+            padding: 0.7rem 2rem;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #00aaff;
+            border: 2px solid #00aaff;
+            background: transparent;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .buttonOutline:hover {
+            background: rgba(0, 170, 255, 0.1);
+            color: #4d9eff;
+            border-color: #4d9eff;
+            transform: translateY(-3px);
+        }
+
+        .buttonFlat {
+            display: inline-block;
+            padding: 0.7rem 1.5rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.7);
+            background: transparent;
+            border: none;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .buttonFlat:hover {
+            color: #00aaff;
+        }
+
+        /* ============================================
+           NAVBAR (HAKUNA BADILIKO)
+           ============================================ */
+        .navbarContainer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(11, 14, 26, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0, 170, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, #00aaff, #0066ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .home-desktop-menu .home-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        .home-desktop-menu .home-links span {
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .home-desktop-menu .home-links span:hover {
+            color: #00aaff;
+        }
+
+        .home-burger-menu {
+            display: none;
+            cursor: pointer;
+        }
+        .home-burger-menu svg {
+            width: 28px;
+            height: 28px;
+            fill: #ffffff;
+        }
+
+        /* Mobile menu */
+        .mobileMenu {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(11, 14, 26, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 2000;
+            padding: 2rem;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .mobileMenu.active {
+            display: flex;
+        }
+        .mobileMenu .home-top {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        .mobileMenu .home-top .logo {
+            font-size: 2rem;
+        }
+        .mobileMenu .home-close-menu svg {
+            width: 32px;
+            height: 32px;
+            fill: #ffffff;
+            cursor: pointer;
+        }
+        .mobileMenu .home-links1 {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            text-align: center;
+        }
+        .mobileMenu .home-links1 span {
+            font-size: 1.4rem;
+            color: #ffffff;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .mobileMenu .home-links1 span:hover {
+            color: #00aaff;
+        }
+        .mobileMenu .home-buttons1 {
+            margin-top: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* ============================================
+           HERO (ILIYOBOLEWA - NYONGEZA)
+           ============================================ */
+        .heroContainer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 5rem 1.5rem 4rem;
+            background: linear-gradient(-45deg, #0b0e1a, #141b2b, #003399, #0066ff);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            position: relative;
+            overflow: hidden;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        /* Particles */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(0, 170, 255, 0.3);
+            border-radius: 50%;
+            animation: floatParticle 8s infinite linear;
+        }
+        @keyframes floatParticle {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+        }
+
+        .home-hero-heading {
+            font-size: 3.2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, #00aaff, #0066ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            z-index: 1;
+        }
+        .home-hero-sub-heading {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        .home-btn-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ============================================
+           STATS SECTION (NYONGEZA)
+           ============================================ */
+        .stats-section {
+            padding: 3rem 1.5rem;
+            background: rgba(20, 27, 43, 0.5);
+            backdrop-filter: blur(8px);
+            border-top: 1px solid rgba(0, 170, 255, 0.05);
+            border-bottom: 1px solid rgba(0, 170, 255, 0.05);
+        }
+        .stats-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 2rem;
+            text-align: center;
+        }
+        .stat-item {
+            min-width: 150px;
+        }
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #00aaff;
+            background: linear-gradient(135deg, #00aaff, #0066ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .stat-label {
+            color: rgba(255,255,255,0.6);
+            font-size: 1rem;
+            margin-top: 0.2rem;
+        }
+
+        /* ============================================
+           HOW IT WORKS (NYONGEZA)
+           ============================================ */
+        .how-it-works {
+            padding: 4rem 1.5rem;
+            background: rgba(11, 14, 26, 0.6);
+        }
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 2.5rem;
+        }
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .step-card {
+            text-align: center;
+            padding: 1.5rem 1rem;
+            background: rgba(20, 27, 43, 0.4);
+            border-radius: 16px;
+            border: 1px solid rgba(0, 170, 255, 0.08);
+            transition: 0.3s;
+        }
+        .step-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(0, 170, 255, 0.3);
+        }
+        .step-icon {
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .step-card h4 {
+            color: #00aaff;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .step-card p {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.9rem;
+        }
+
+        /* ============================================
+           TRUSTED BY (NYONGEZA)
+           ============================================ */
+        .trusted-section {
+            padding: 2rem 1.5rem;
+            background: rgba(20, 27, 43, 0.3);
+            text-align: center;
+        }
+        .badges {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+        .badge {
+            color: rgba(255,255,255,0.5);
+            font-weight: 500;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 0.4rem 1.5rem;
+            border-radius: 40px;
+            background: rgba(255,255,255,0.02);
+            transition: 0.3s;
+        }
+        .badge:hover {
+            color: #00aaff;
+            border-color: rgba(0, 170, 255, 0.2);
+        }
+
+        /* ============================================
+           FEATURES (HAKUNA BADILIKO)
+           ============================================ */
+        .featuresContainer {
+            padding: 4rem 1.5rem;
+            background: rgba(20, 27, 43, 0.4);
+            backdrop-filter: blur(8px);
+        }
+        .home-features1 {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .home-container02 {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .home-features-heading {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin: 0.5rem 0;
+        }
+        .home-features-sub-heading {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.1rem;
+        }
+        .home-container03 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        .featuresCard {
+            background: rgba(20, 27, 43, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 170, 255, 0.1);
+            border-radius: 16px;
+            padding: 1.8rem;
+            transition: 0.3s;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        .featuresCard:hover {
+            transform: translateY(-6px);
+            border-color: rgba(0, 170, 255, 0.3);
+            box-shadow: 0 12px 40px rgba(0, 100, 255, 0.15);
+        }
+        .featuresIcon {
+            fill: #00aaff;
+            width: 2.5rem;
+            height: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .feature-card-text {
+            color: #00aaff;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0.5rem 0;
+        }
+        .feature-card-container .bodySmall {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+        }
+
+        /* ============================================
+           PRICING (HAKUNA BADILIKO)
+           ============================================ */
+        .pricingContainer {
+            padding: 4rem 1.5rem;
+            text-align: center;
+        }
+        .home-container04 {
+            margin-bottom: 2.5rem;
+        }
+        .home-pricing-sub-heading {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.1rem;
+        }
+        .home-container05 {
+            display: flex;
+            justify-content: center;
+        }
+        .freePricingCard {
+            max-width: 400px;
+            width: 100%;
+            background: rgba(20, 27, 43, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 170, 255, 0.15);
+            border-radius: 24px;
+            padding: 2.5rem 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            transition: 0.3s;
+        }
+        .freePricingCard:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 170, 255, 0.3);
+            box-shadow: 0 12px 40px rgba(0, 100, 255, 0.15);
+        }
+        .home-text36 {
+            font-size: 1.5rem;
+            color: #00aaff;
+            font-weight: 700;
+        }
+        .home-free-plan-price {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #00aaff;
+        }
+        .home-container08 {
+            text-align: left;
+            margin: 1.5rem 0;
+        }
+        .home-container08 div {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.3rem 0;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        .home-container08 div .home-text40,
+        .home-container08 div .home-text41,
+        .home-container08 div .home-text42 {
+            color: #00aaff;
+            font-weight: 700;
+        }
+        .home-button {
+            width: 100%;
+            text-align: center;
+        }
+
+        /* ============================================
+           API / ? API Integration (HAKUNA BADILIKO)
+           ============================================ */
+        .accessContainer {
+            padding: 3rem 1.5rem;
+            background: rgba(11, 14, 26, 0.6);
+            backdrop-filter: blur(8px);
+            border-top: 1px solid rgba(0, 170, 255, 0.05);
+            border-bottom: 1px solid rgba(0, 170, 255, 0.05);
+        }
+        .api-access01 {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .api-access02 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .api-card {
+            background: rgba(20, 27, 43, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 170, 255, 0.1);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: 0.3s;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        .api-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(0, 170, 255, 0.3);
+        }
+        .api-card .feature-card-text {
+            margin-left: 0.5rem;
+        }
+        .api-card pre {
+            background: #0b0e1a;
+            border-radius: 10px;
+            padding: 0.8rem 1rem;
+            overflow-x: auto;
+            font-size: 0.85rem;
+            color: #00aaff;
+            border: 1px solid rgba(0, 170, 255, 0.1);
+            margin-top: 0.5rem;
+        }
+
+        /* ============================================
+           BANNER / VIDEO UPLOAD (HAKUNA BADILIKO)
+           ============================================ */
+        .bannerContainer {
+            padding: 3rem 1.5rem;
+            background: linear-gradient(135deg, #003399, #0066ff);
+            border-radius: 24px;
+            margin: 2rem 1.5rem;
+            box-shadow: 0 8px 40px rgba(0, 100, 255, 0.3);
+        }
+        .home-banner-heading {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        .home-banner-sub-heading {
+            display: block;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            font-size: 1rem;
+        }
+        #video-upload-container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1.5rem;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        #video-upload-container video {
+            width: 100%;
+            border-radius: 12px;
+            background: #000;
+        }
+        #video-upload-container .form-group {
+            margin: 1rem 0;
+        }
+        #video-upload-container label {
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+        }
+        #video-upload-container input[type="file"] {
+            display: block;
+            width: 100%;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #fff;
+        }
+        #video-upload-container .btn-success {
+            background: linear-gradient(135deg, #0066ff, #00aaff);
+            border: none;
+            color: #fff;
+            font-weight: 600;
+            padding: 0.7rem 2rem;
+            border-radius: 40px;
+            width: 100%;
+            transition: 0.3s;
+        }
+        #video-upload-container .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 100, 255, 0.4);
+        }
+        #slider {
+            margin-top: 0.5rem;
+        }
+
+        /* ============================================
+           FAQ (HAKUNA BADILIKO)
+           ============================================ */
+        .faqContainer {
+            padding: 4rem 1.5rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .home-container26 {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+        .home-text82 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+        .home-text83 {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.1rem;
+        }
+        .home-container27 {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+        .question1-container {
+            background: rgba(20, 27, 43, 0.4);
+            backdrop-filter: blur(8px);
+            border-radius: 12px;
+            padding: 1.2rem 1.8rem;
+            border: 1px solid rgba(0, 170, 255, 0.05);
+            transition: 0.3s;
+        }
+        .question1-container:hover {
+            border-color: rgba(0, 170, 255, 0.2);
+        }
+        .question1-container .heading3 {
+            color: #00aaff;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+        .question1-container .bodySmall {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+        }
+
+        /* ============================================
+           FOOTER (HAKUNA BADILIKO)
+           ============================================ */
+        .footerContainer {
+            padding: 2rem 1.5rem;
+            border-top: 1px solid rgba(0, 170, 255, 0.05);
+            background: #0b0e1a;
+        }
+        .home-container29 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .home-text86 {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.85rem;
+        }
+        .home-icon-group1 {
+            display: flex;
+            gap: 1rem;
+        }
+        .socialIcons {
+            fill: rgba(255, 255, 255, 0.3);
+            width: 1.5rem;
+            height: 1.5rem;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .socialIcons:hover {
+            fill: #00aaff;
+        }
+
+        /* ============================================
+           RESPONSIVE (HAKUNA BADILIKO)
+           ============================================ */
+        @media (max-width: 768px) {
+            .home-desktop-menu {
+                display: none;
+            }
+            .home-burger-menu {
+                display: block;
+            }
+            .home-hero-heading {
+                font-size: 2.4rem;
+            }
+            .home-container03 {
+                grid-template-columns: 1fr;
+            }
+            .api-access02 {
+                grid-template-columns: 1fr;
+            }
+            .bannerContainer {
+                margin: 1rem;
+                padding: 2rem 1rem;
+            }
+            .home-container29 {
+                flex-direction: column;
+                text-align: center;
+            }
+            .stats-container {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            .steps-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .mobileMenu {
+                display: none !important;
+            }
+        }
+
+        /* ============================================
+           UTILITY / MISC (HAKUNA BADILIKO)
+           ============================================ */
+        .overline {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #00aaff;
+            font-weight: 700;
+        }
+
+        .heading1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        .heading2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        .heading3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+        .bodyLarge {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        .bodySmall {
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 1s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Loader (hidden by default) */
+        .loader {
+            display: none;
+        }
+
+        /* Fix for slider value */
+        #slider-value {
+            color: #00aaff;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================ -->
+    <!-- NAVBAR -->
+    <!-- ============================================ -->
+    <div class="home-container">
+        <div class="home-header">
+            <header data-thq="thq-navbar" class="navbarContainer home-navbar-interactive">
+                <span class="logo"><a href="{% url 'ml_app:home' %}">DETECTIFY AI</a></span>
+                <div data-thq="thq-navbar-nav" class="home-desktop-menu">
+                    <nav class="home-links">
+                        <span class="bodySmall" onclick="scrollToForm()" style="cursor:pointer;">🚀 Platform</span>
+                        <span class="bodySmall" onclick="scrollTo? API Integration()" style="cursor:pointer;">⚙️ Workflow</span>
+                        <span class="bodySmall" onclick="scrollToFAQ()" style="cursor:pointer;">📚 Resources & 💻 Developers</span>
+                        <span class="bodySmall">Contact</span>
+                    </nav>
+                </div>
+                <div data-thq="thq-burger-menu" class="home-burger-menu" onclick="toggleMobileMenu()">
+                    <svg viewBox="0 0 1024 1024" class="home-icon socialIcons">
+                        <path d="M128 554.667h768c23.552 0 42.667-19.115 42.667-42.667s-19.115-42.667-42.667-42.667h-768c-23.552 0-42.667 19.115-42.667 42.667s19.115 42.667 42.667 42.667zM128 298.667h768c23.552 0 42.667-19.115 42.667-42.667s-19.115-42.667-42.667-42.667h-768c-23.552 0-42.667 19.115-42.667 42.667s19.115 42.667 42.667 42.667zM128 810.667h768c23.552 0 42.667-19.115 42.667-42.667s-19.115-42.667-42.667-42.667h-768c-23.552 0-42.667 19.115-42.667 42.667s19.115 42.667 42.667 42.667z"></path>
+                    </svg>
+                </div>
+                <!-- Mobile Menu -->
+                <div data-thq="thq-mobile-menu" class="mobileMenu" id="mobileMenu">
+                    <div class="home-top">
+                        <span class="logo">DETECTIFY AI</span>
+                        <div data-thq="thq-close-menu" class="home-close-menu" onclick="toggleMobileMenu()">
+                            <svg viewBox="0 0 1024 1024" class="home-icon02 socialIcons">
+                                <path d="M810 274l-238 238 238 238-60 60-238-238-238 238-60-60 238-238-238-238 60-60 238 238 238-238z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <nav class="home-links1">
+                        <span class="bodySmall" onclick="scrollToForm(); toggleMobileMenu();">🚀 Platform</span>
+                        <span class="bodySmall" onclick="scrollTo? API Integration(); toggleMobileMenu();">⚙️ Workflow</span>
+                        <span class="bodySmall" onclick="scrollToFAQ(); toggleMobileMenu();">📚 Resources & 💻 Developers</span>
+                        <span class="bodySmall">📞 Contact Sales</span>
+                    </nav>
+                    <div class="home-buttons1">
+                        <button class="buttonFlat">Login</button>
+                        <button class="buttonFilled" onclick="scrollToForm(); toggleMobileMenu();">Register</button>
+                    </div>
+                </div>
+            </header>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- HERO (ILIYOBOLEWA) -->
+        <!-- ============================================ -->
+        <div class="home-hero">
+            <div class="heroContainer home-hero1">
+                <!-- particles container -->
+                <div class="particles" id="particlesContainer"></div>
+                <div class="home-container01">
+                    <h1 class="home-hero-heading heading1">🔍 Next-Generation DeepFake Detection & Digital Forensics</h1>
+                    <span class="home-hero-sub-heading bodyLarge">🛡️ Enterprise-Grade AI Protection Against Synthetic Media Threats</span>
+                    <div class="home-btn-group">
+                        <!-- button ya glow imeongezwa class "glow" -->
+                        <button class="buttonFilled glow" onclick="scrollToForm()">Get Started Now</button>
+                        <button class="buttonFlat">Learn More →</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+                <!-- ============================================ -->
+        <!-- STATS SECTION (MODERN GLASSMORPHISM UPGRADE) -->
+        <!-- ============================================ -->
+        <section class="stats-section" style="max-width: 1200px; margin: 4.5rem auto 0 auto; padding: 0 2rem;">
+            <div class="stats-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
+                
+                <!-- Card 1: Accuracy -->
+                <div class="stat-item" style="background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(0, 170, 255, 0.12); border-radius: 20px; padding: 2.5rem 2rem; text-align: center; box-shadow: 0 10px 35px rgba(0, 0, 0, 0.3); transition: 0.4s ease;" onmouseover="this.style.borderColor='rgba(0, 170, 255, 0.4)'; this.style.transform='translateY(-8px)';" onmouseout="this.style.borderColor='rgba(0, 170, 255, 0.12)'; this.style.transform='translateY(0)';">
+                    <span style="font-size: 2.5rem; display: block; margin-bottom: 0.8rem;">🛡️</span>
+                    <div class="stat-number" data-target="99.7%" style="font-size: 3rem; font-weight: 800; margin: 0; background: linear-gradient(135deg, #00aaff, #0066ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">99.7%</div>
+                    <div class="stat-label" style="color: rgba(255, 255, 255, 0.6); font-size: 0.9rem; margin-top: 0.5rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Detection Accuracy</div>
+                </div>
+
+                <!-- Card 2: Media Processed -->
+                <div class="stat-item" style="background: hsla(68, 65%, 47%, 0.86); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(0, 170, 255, 0.12); border-radius: 20px; padding: 2.5rem 2rem; text-align: center; box-shadow: 0 10px 35px rgba(0, 0, 0, 0.3); transition: 0.4s ease;" onmouseover="this.style.borderColor='rgba(0, 170, 255, 0.4)'; this.style.transform='translateY(-8px)';" onmouseout="this.style.borderColor='rgba(0, 170, 255, 0.12)'; this.style.transform='translateY(0)';">
+                    <span style="font-size: 2.5rem; display: block; margin-bottom: 0.8rem;">📹</span>
+                    <div class="stat-number" data-target="12450" style="font-size: 3rem; font-weight: 800; margin: 0; background: linear-gradient(135deg, #ffffff, #b3d9ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">12,450+</div>
+                    <div class="stat-label" style="color: rgba(255, 255, 255, 0.6); font-size: 0.9rem; margin-top: 0.5rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Media Processed</div>
+                </div>
+
+                <!-- Card 3: Threat Detection Rate -->
+                <div class="stat-item" style="background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(0, 170, 255, 0.12); border-radius: 20px; padding: 2.5rem 2rem; text-align: center; box-shadow: 0 10px 35px rgba(0, 0, 0, 0.3); transition: 0.4s ease;" onmouseover="this.style.borderColor='rgba(0, 170, 255, 0.4)'; this.style.transform='translateY(-8px)';" onmouseout="this.style.borderColor='rgba(0, 170, 255, 0.12)'; this.style.transform='translateY(0)';">
+                    <span style="font-size: 2.5rem; display: block; margin-bottom: 0.8rem;">⚡</span>
+                    <div class="stat-number" data-target="98.2" style="font-size: 3rem; font-weight: 800; margin: 0; background: linear-gradient(135deg, #00ff88, #00b359); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">98.2%</div>
+                    <div class="stat-label" style="color: rgba(255, 255, 255, 0.6); font-size: 0.9rem; margin-top: 0.5rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Threat Detection Rate</div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- ============================================ -->
+        <!-- FEATURES (HAKUNA BADILIKO) -->
+        <!-- ============================================ -->
+        <div class="home-features">
+            <div class="featuresContainer">
+                <div class="home-features1">
+                    <div class="home-container02">
+                        <span class="overline">features</span>
+                        <h2 class="home-features-heading heading2">Advanced AI-Powered DeepFake Detection Capabilities</h2>
+                        <span class="home-features-sub-heading bodyLarge">Deploying state-of-the-art computer vision to expose highly sophisticated synthetic media manipulations. By integrating advanced facial landmark tracking and spatial-temporal neural networks, the system identifies deep anomalies, ensuring absolute verification and protection against automated identity theft</span>
+                    </div>
+                    <div class="home-container03">
+                        <!-- Feature 1 -->
+                        <div class="featuresCard feature-card-feature-card">
+                            <svg viewBox="0 0 1024 1024" class="featuresIcon">
+                                <path d="M809.003 291.328l-297.003 171.819-297.003-171.819 275.456-157.397c4.779-2.731 9.899-4.48 15.147-5.333 9.301-1.451 18.987 0.128 27.904 5.291zM491.776 979.669c6.016 3.243 12.928 5.077 20.224 5.077 7.381 0 14.336-1.877 20.395-5.163 15.189-2.475 29.909-7.68 43.392-15.36l298.709-170.709c26.368-15.232 45.269-38.315 55.424-64.597 5.675-14.592 8.619-30.165 8.747-46.251v-341.333c0-20.395-4.821-39.723-13.397-56.917-0.939-3.029-2.219-5.973-3.883-8.832-1.963-3.371-4.267-6.357-6.912-8.96-1.323-1.835-2.731-3.669-4.139-5.419-9.813-12.203-21.845-22.528-35.456-30.507l-299.051-170.88c-26.027-15.019-55.467-19.84-83.328-15.531-15.531 2.432-30.507 7.637-44.288 15.488l-298.709 170.709c-16.341 9.429-29.824 21.888-40.149 36.267-2.56 2.56-4.864 5.547-6.784 8.832-1.664 2.901-2.987 5.888-3.925 8.96-1.707 3.456-3.243 6.955-4.608 10.496-5.632 14.635-8.576 30.208-8.704 45.995v341.632c0.043 30.293 10.581 58.197 28.331 80.128 9.813 12.203 21.845 22.528 35.456 30.507l299.051 170.88c13.824 7.979 28.587 13.099 43.605 15.445zM469.333 537.045v340.949l-277.12-158.336c-4.736-2.773-8.832-6.315-12.16-10.411-5.931-7.381-9.387-16.512-9.387-26.581v-318.379zM554.667 877.995v-340.949l298.667-172.757v318.379c-0.043 5.163-1.067 10.496-2.987 15.445-3.413 8.789-9.6 16.384-18.176 21.333z"></path>
+                            </svg>
+                            <div class="feature-card-container">
+                                <h3 class="feature-card-text heading3">Deep Neural Network Analysis nad Digital Forensics</h3>
+                                <span class="bodySmall">Utilizes cutting-edge AI algorithms to detect even the most sophisticated DeepFake videos</span>
+                            </div>
+                        </div>
+                        <!-- Feature 2 -->
+                        <div class="featuresCard feature-card-feature-card">
+                            <svg viewBox="0 0 1024 1024" class="featuresIcon">
+                                <path d="M809.003 291.328l-297.003 171.819-297.003-171.819 275.456-157.397c4.779-2.731 9.899-4.48 15.147-5.333 9.301-1.451 18.987 0.128 27.904 5.291zM491.776 979.669c6.016 3.243 12.928 5.077 20.224 5.077 7.381 0 14.336-1.877 20.395-5.163 15.189-2.475 29.909-7.68 43.392-15.36l298.709-170.709c26.368-15.232 45.269-38.315 55.424-64.597 5.675-14.592 8.619-30.165 8.747-46.251v-341.333c0-20.395-4.821-39.723-13.397-56.917-0.939-3.029-2.219-5.973-3.883-8.832-1.963-3.371-4.267-6.357-6.912-8.96-1.323-1.835-2.731-3.669-4.139-5.419-9.813-12.203-21.845-22.528-35.456-30.507l-299.051-170.88c-26.027-15.019-55.467-19.84-83.328-15.531-15.531 2.432-30.507 7.637-44.288 15.488l-298.709 170.709c-16.341 9.429-29.824 21.888-40.149 36.267-2.56 2.56-4.864 5.547-6.784 8.832-1.664 2.901-2.987 5.888-3.925 8.96-1.707 3.456-3.243 6.955-4.608 10.496-5.632 14.635-8.576 30.208-8.704 45.995v341.632c0.043 30.293 10.581 58.197 28.331 80.128 9.813 12.203 21.845 22.528 35.456 30.507l299.051 170.88c13.824 7.979 28.587 13.099 43.605 15.445zM469.333 537.045v340.949l-277.12-158.336c-4.736-2.773-8.832-6.315-12.16-10.411-5.931-7.381-9.387-16.512-9.387-26.581v-318.379zM554.667 877.995v-340.949l298.667-172.757v318.379c-0.043 5.163-1.067 10.496-2.987 15.445-3.413 8.789-9.6 16.384-18.176 21.333z"></path>
+                            </svg>
+                            <div class="feature-card-container">
+                                <h3 class="feature-card-text heading3">Real-Time Video & Image Analysis</h3>
+                                <span class="bodySmall">Provides instant analysis of video and image assets to detect potential DeepFake content in real-time. By tracking packet uploads and utilizing high-speed neural processing, the engine flags synthetic anomalies instantly to secure live media streams against data tampering</span>
+                            </div>
+                        </div>
+                        <!-- Feature 3 -->
+                        <div class="featuresCard feature-card-feature-card">
+                            <svg viewBox="0 0 1024 1024" class="featuresIcon">
+                                <path d="M809.003 291.328l-297.003 171.819-297.003-171.819 275.456-157.397c4.779-2.731 9.899-4.48 15.147-5.333 9.301-1.451 18.987 0.128 27.904 5.291zM491.776 979.669c6.016 3.243 12.928 5.077 20.224 5.077 7.381 0 14.336-1.877 20.395-5.163 15.189-2.475 29.909-7.68 43.392-15.36l298.709-170.709c26.368-15.232 45.269-38.315 55.424-64.597 5.675-14.592 8.619-30.165 8.747-46.251v-341.333c0-20.395-4.821-39.723-13.397-56.917-0.939-3.029-2.219-5.973-3.883-8.832-1.963-3.371-4.267-6.357-6.912-8.96-1.323-1.835-2.731-3.669-4.139-5.419-9.813-12.203-21.845-22.528-35.456-30.507l-299.051-170.88c-26.027-15.019-55.467-19.84-83.328-15.531-15.531 2.432-30.507 7.637-44.288 15.488l-298.709 170.709c-16.341 9.429-29.824 21.888-40.149 36.267-2.56 2.56-4.864 5.547-6.784 8.832-1.664 2.901-2.987 5.888-3.925 8.96-1.707 3.456-3.243 6.955-4.608 10.496-5.632 14.635-8.576 30.208-8.704 45.995v341.632c0.043 30.293 10.581 58.197 28.331 80.128 9.813 12.203 21.845 22.528 35.456 30.507l299.051 170.88c13.824 7.979 28.587 13.099 43.605 15.445zM469.333 537.045v340.949l-277.12-158.336c-4.736-2.773-8.832-6.315-12.16-10.411-5.931-7.381-9.387-16.512-9.387-26.581v-318.379zM554.667 877.995v-340.949l298.667-172.757v318.379c-0.043 5.163-1.067 10.496-2.987 15.445-3.413 8.789-9.6 16.384-18.176 21.333z"></path>
+                            </svg>
+                            <div class="feature-card-container">
+                                <h3 class="feature-card-text heading3">User-Friendly Interface</h3>
+                                <span class="bodySmall">Intuitive and easy-to-use interface for seamless navigation and efficient detection process</span>
+                            </div>
+                        </div>
+                        <!-- Feature 4 -->
+                        <div class="featuresCard feature-card-feature-card">
+                            <svg viewBox="0 0 1024 1024" class="featuresIcon">
+                                <path d="M809.003 291.328l-297.003 171.819-297.003-171.819 275.456-157.397c4.779-2.731 9.899-4.48 15.147-5.333 9.301-1.451 18.987 0.128 27.904 5.291zM491.776 979.669c6.016 3.243 12.928 5.077 20.224 5.077 7.381 0 14.336-1.877 20.395-5.163 15.189-2.475 29.909-7.68 43.392-15.36l298.709-170.709c26.368-15.232 45.269-38.315 55.424-64.597 5.675-14.592 8.619-30.165 8.747-46.251v-341.333c0-20.395-4.821-39.723-13.397-56.917-0.939-3.029-2.219-5.973-3.883-8.832-1.963-3.371-4.267-6.357-6.912-8.96-1.323-1.835-2.731-3.669-4.139-5.419-9.813-12.203-21.845-22.528-35.456-30.507l-299.051-170.88c-26.027-15.019-55.467-19.84-83.328-15.531-15.531 2.432-30.507 7.637-44.288 15.488l-298.709 170.709c-16.341 9.429-29.824 21.888-40.149 36.267-2.56 2.56-4.864 5.547-6.784 8.832-1.664 2.901-2.987 5.888-3.925 8.96-1.707 3.456-3.243 6.955-4.608 10.496-5.632 14.635-8.576 30.208-8.704 45.995v341.632c0.043 30.293 10.581 58.197 28.331 80.128 9.813 12.203 21.845 22.528 35.456 30.507l299.051 170.88c13.824 7.979 28.587 13.099 43.605 15.445zM469.333 537.045v340.949l-277.12-158.336c-4.736-2.773-8.832-6.315-12.16-10.411-5.931-7.381-9.387-16.512-9.387-26.581v-318.379zM554.667 877.995v-340.949l298.667-172.757v318.379c-0.043 5.163-1.067 10.496-2.987 15.445-3.413 8.789-9.6 16.384-18.176 21.333z"></path>
+                            </svg>
+                            <div class="feature-card-container">
+                                <h3 class="feature-card-text heading3">Detailed Reports</h3>
+                                <span class="bodySmall">Generates comprehensive reports with detailed insights on detected DeepFake elements</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- HOW IT WORKS (NYONGEZA) -->
+        <!-- ============================================ -->
+        <section class="how-it-works">
+            <div class="container">
+                <h2 class="section-title">⚙️ Workflow</h2>
+                <div class="steps-grid">
+                    <div class="step-card">
+                        <div class="step-icon">📤</div>
+                        <h4>Upload</h4>
+                        <p>Upload your video or image</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-icon">🤖</div>
+                        <h4>Analyze</h4>
+                        <p>AI analyzes for deepfake artifacts</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-icon">📊</div>
+                        <h4>Results</h4>
+                        <p>Get instant confidence score</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-icon">🛡️</div>
+                        <h4>Protect</h4>
+                        <p>Take action with verified data</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- PRICING (HAKUNA BADILIKO) -->
+        <!-- ============================================ -->
+        <div class="home-pricing">
+            <div class="pricingContainer">
+                <div class="home-container04">
+                    <span class="overline">Pricing Plans</span>
+                    <h2 class="heading2">Enterprise-Grade Defense Start Free</h2>
+                    <span class="home-pricing-sub-heading bodyLarge">Full-featured plan with no commitment built for scale</span>
+                </div>
+                <div class="home-container05">
+                    <div class="freePricingCard home-pricing-card">
+                        <div class="home-container06">
+                            <span class="home-text36 heading3">Starter Plan</span>
+                            <span class="bodySmall">All core detection capabilities, completely free</span>
+                        </div>
+                        <div class="home-container07">
+                            <span class="home-text37">$</span>
+                            <span class="home-free-plan-price">000.0</span>
+                        </div>
+                        <div class="home-container08">
+                            <div><span class="home-text40">✔</span><span class="bodySmall">✅ Full AI-Powered DeepFake Detection Engine</span></div>
+                            <div><span class="home-text41">✔</span><span class="bodySmall">✅ Unlimited Monthly Media Analysis (2500K+)+</span></div>
+                            <div><span class="home-text42">✔</span><span class="bodySmall">✅ RESTful API with SDK Support</span></div>
+                            <div><span class="home-text42">✔</span><span class="bodySmall">✅ Enterprise-Grade Scalability & Compliance</span></div>
+                        </div>
+                        <button class="home-button buttonOutline" onclick="scrollToForm()">🚀 Launch Free Plan</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- TRUSTED BY (NYONGEZA) -->
+        <!-- ============================================ -->
+        <section class="trusted-section">
+            <p style="text-align:center; color: rgba(235, 246, 26, 0.903); font-size:0.9rem; letter-spacing:2px; text-transform:uppercase; animation: pulse 2s ease-in-out infinite;">
+                Trusted by innovative teams
+            </p>
+            <div class="badges">
+                <span class="badge">🔹 TechCorp</span>
+                <span class="badge">🔹 AI Labs</span>
+                <span class="badge">🔹 CyberSec Inc.</span>
+                <span class="badge">🔹 DataGuard</span>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- ? API Integration / API (HAKUNA BADILIKO) -->
+        <!-- ============================================ -->
+        <div class="home-? API Integration" id="? API Integration-section">
+            <div class="accessContainer">
+                <div class="api-access01">
+                    <span class="overline">API Integration</span>
+                    <h2 class="home-features-heading heading2">Enterprise-Ready API for Seamless Integration</h2>
+                    <span class="home-features-sub-heading bodyLarge">Integrate deepfake detection into your workflow in minutes � with full scalability and zero friction.</span>
+                </div>
+                <div class="api-access02">
+                    <!-- Windows -->
+                    <div class="feature-card-feature-card api-card">
+                        <div style="display:flex; flex-direction:row; align-items:center; gap:0.5rem;">
+                            <svg viewBox="0 0 1024 1024" class="featuresIcon"><path d="M809.003 291.328l-297.003 171.819-297.003-171.819 275.456-157.397c4.779-2.731 9.899-4.48 15.147-5.333 9.301-1.451 18.987 0.128 27.904 5.291zM491.776 979.669c6.016 3.243 12.928 5.077 20.224 5.077 7.381 0 14.336-1.877 20.395-5.163 15.189-2.475 29.909-7.68 43.392-15.36l298.709-170.709c26.368-15.232 45.269-38.315 55.424-64.597 5.675-14.592 8.619-30.165 8.747-46.251v-341.333c0-20.395-4.821-39.723-13.397-56.917-0.939-3.029-2.219-5.973-3.883-8.832-1.963-3.371-4.267-6.357-6.912-8.96-1.323-1.835-2.731-3.669-4.139-5.419-9.813-12.203-21.845-22.528-35.456-30.507l-299.051-170.88c-26.027-15.019-55.467-19.84-83.328-15.531-15.531 2.432-30.507 7.637-44.288 15.488l-298.709 170.709c-16.341 9.429-29.824 21.888-40.149 36.267-2.56 2.56-4.864 5.547-6.784 8.832-1.664 2.901-2.987 5.888-3.925 8.96-1.707 3.456-3.243 6.955-4.608 10.496-5.632 14.635-8.576 30.208-8.704 45.995v341.632c0.043 30.293 10.581 58.197 28.331 80.128 9.813 12.203 21.845 22.528 35.456 30.507l299.051 170.88c13.824 7.979 28.587 13.099 43.605 15.445zM469.333 537.045v340.949l-277.12-158.336c-4.736-2.773-8.832-6.315-12.16-10.411-5.931-7.381-9.387-16.512-9.387-26.581v-318.379zM554.667 877.995v-340.949l298.667-172.757v318.379c-0.043 5.163-1.067 10.496-2.987 15.445-3.413 8.789-9.6 16.384-18.176 21.333z"></path></svg>
+                            <h3 class="feature-card-text heading3">Windows</h3>
+                        </div>
+                        <div class="feature-card-container">
+                            <span class="bodySmall" style="display:block; overflow-x:auto;"><pre>Invoke-WebRequest -Uri "http://127.0.0.1:8000/video_upload_api/" -Method POST -InFile "path/to/your/video/file.mp4"</pre></span>
+                        </div>
+                    </div>
+                    <!-- Linux -->
+                    <div class="feature-card-feature-card api-card">
+                        <div style="display:flex; flex-direction:row; align-items:center; gap:0.5rem;">
+                            <svg viewBox="0 0 1024 1024" class="featuresIcon"><path d="M809.003 291.328l-297.003 171.819-297.003-171.819 275.456-157.397c4.779-2.731 9.899-4.48 15.147-5.333 9.301-1.451 18.987 0.128 27.904 5.291zM491.776 979.669c6.016 3.243 12.928 5.077 20.224 5.077 7.381 0 14.336-1.877 20.395-5.163 15.189-2.475 29.909-7.68 43.392-15.36l298.709-170.709c26.368-15.232 45.269-38.315 55.424-64.597 5.675-14.592 8.619-30.165 8.747-46.251v-341.333c0-20.395-4.821-39.723-13.397-56.917-0.939-3.029-2.219-5.973-3.883-8.832-1.963-3.371-4.267-6.357-6.912-8.96-1.323-1.835-2.731-3.669-4.139-5.419-9.813-12.203-21.845-22.528-35.456-30.507l-299.051-170.88c-26.027-15.019-55.467-19.84-83.328-15.531-15.531 2.432-30.507 7.637-44.288 15.488l-298.709 170.709c-16.341 9.429-29.824 21.888-40.149 36.267-2.56 2.56-4.864 5.547-6.784 8.832-1.664 2.901-2.987 5.888-3.925 8.96-1.707 3.456-3.243 6.955-4.608 10.496-5.632 14.635-8.576 30.208-8.704 45.995v341.632c0.043 30.293 10.581 58.197 28.331 80.128 9.813 12.203 21.845 22.528 35.456 30.507l299.051 170.88c13.824 7.979 28.587 13.099 43.605 15.445zM469.333 537.045v340.949l-277.12-158.336c-4.736-2.773-8.832-6.315-12.16-10.411-5.931-7.381-9.387-16.512-9.387-26.581v-318.379zM554.667 877.995v-340.949l298.667-172.757v318.379c-0.043 5.163-1.067 10.496-2.987 15.445-3.413 8.789-9.6 16.384-18.176 21.333z"></path></svg>
+                            <h3 class="feature-card-text heading3">Linux</h3>
+                        </div>
+                        <div class="feature-card-container">
+                            <span class="bodySmall" style="display:block; overflow-x:auto;"><pre>curl -X POST -F "file=@path/to/your/video/file.mp4" http://127.0.0.1:8000/video_upload_api/</pre></span>
+                        </div>
+                    </div>
+                    <!-- Python -->
+                    <div class="feature-card-feature-card api-card">
+                        <div style="display:flex; flex-direction:row; align-items:center; gap:0.5rem;">
+                            <svg viewBox="0 0 1024 1024" class="featuresIcon"><path d="M809.003 291.328l-297.003 171.819-297.003-171.819 275.456-157.397c4.779-2.731 9.899-4.48 15.147-5.333 9.301-1.451 18.987 0.128 27.904 5.291zM491.776 979.669c6.016 3.243 12.928 5.077 20.224 5.077 7.381 0 14.336-1.877 20.395-5.163 15.189-2.475 29.909-7.68 43.392-15.36l298.709-170.709c26.368-15.232 45.269-38.315 55.424-64.597 5.675-14.592 8.619-30.165 8.747-46.251v-341.333c0-20.395-4.821-39.723-13.397-56.917-0.939-3.029-2.219-5.973-3.883-8.832-1.963-3.371-4.267-6.357-6.912-8.96-1.323-1.835-2.731-3.669-4.139-5.419-9.813-12.203-21.845-22.528-35.456-30.507l-299.051-170.88c-26.027-15.019-55.467-19.84-83.328-15.531-15.531 2.432-30.507 7.637-44.288 15.488l-298.709 170.709c-16.341 9.429-29.824 21.888-40.149 36.267-2.56 2.56-4.864 5.547-6.784 8.832-1.664 2.901-2.987 5.888-3.925 8.96-1.707 3.456-3.243 6.955-4.608 10.496-5.632 14.635-8.576 30.208-8.704 45.995v341.632c0.043 30.293 10.581 58.197 28.331 80.128 9.813 12.203 21.845 22.528 35.456 30.507l299.051 170.88c13.824 7.979 28.587 13.099 43.605 15.445zM469.333 537.045v340.949l-277.12-158.336c-4.736-2.773-8.832-6.315-12.16-10.411-5.931-7.381-9.387-16.512-9.387-26.581v-318.379zM554.667 877.995v-340.949l298.667-172.757v318.379c-0.043 5.163-1.067 10.496-2.987 15.445-3.413 8.789-9.6 16.384-18.176 21.333z"></path></svg>
+                            <h3 class="feature-card-text heading3">Python</h3>
+                        </div>
+                        <div class="feature-card-container">
+                            <span class="bodySmall" style="display:block; overflow-x:auto;"><pre>
+import requests
+
+url = "http://127.0.0.1:8000/video_upload_api/"
+files = {'file': open('path/to/your/video/file.mp4', 'rb')}
+response = requests.post(url, files=files)
+                            </pre></span>
+                        </div>
+                    </div>
+                    <!-- JavaScript -->
+                    <div class="feature-card-feature-card api-card">
+                        <div style="display:flex; flex-direction:row; align-items:center; gap:0.5rem;">
+                            <svg viewBox="0 0 1024 1024" class="featuresIcon"><path d="M809.003 291.328l-297.003 171.819-297.003-171.819 275.456-157.397c4.779-2.731 9.899-4.48 15.147-5.333 9.301-1.451 18.987 0.128 27.904 5.291zM491.776 979.669c6.016 3.243 12.928 5.077 20.224 5.077 7.381 0 14.336-1.877 20.395-5.163 15.189-2.475 29.909-7.68 43.392-15.36l298.709-170.709c26.368-15.232 45.269-38.315 55.424-64.597 5.675-14.592 8.619-30.165 8.747-46.251v-341.333c0-20.395-4.821-39.723-13.397-56.917-0.939-3.029-2.219-5.973-3.883-8.832-1.963-3.371-4.267-6.357-6.912-8.96-1.323-1.835-2.731-3.669-4.139-5.419-9.813-12.203-21.845-22.528-35.456-30.507l-299.051-170.88c-26.027-15.019-55.467-19.84-83.328-15.531-15.531 2.432-30.507 7.637-44.288 15.488l-298.709 170.709c-16.341 9.429-29.824 21.888-40.149 36.267-2.56 2.56-4.864 5.547-6.784 8.832-1.664 2.901-2.987 5.888-3.925 8.96-1.707 3.456-3.243 6.955-4.608 10.496-5.632 14.635-8.576 30.208-8.704 45.995v341.632c0.043 30.293 10.581 58.197 28.331 80.128 9.813 12.203 21.845 22.528 35.456 30.507l299.051 170.88c13.824 7.979 28.587 13.099 43.605 15.445zM469.333 537.045v340.949l-277.12-158.336c-4.736-2.773-8.832-6.315-12.16-10.411-5.931-7.381-9.387-16.512-9.387-26.581v-318.379zM554.667 877.995v-340.949l298.667-172.757v318.379c-0.043 5.163-1.067 10.496-2.987 15.445-3.413 8.789-9.6 16.384-18.176 21.333z"></path></svg>
+                            <h3 class="feature-card-text heading3">JavaScript</h3>
+                        </div>
+                        <div class="feature-card-container">
+                            <span class="bodySmall" style="display:block; overflow-x:auto; max-height:200px;"><pre>
+const url = 'http://127.0.0.1:8000/video_upload_api/';
+const fileInput = document.querySelector('input[type="file"]');
+const file = fileInput.files[0];
+
+const formData = new FormData();
+formData.append('file', file);
+
+fetch(url, {
+  method: 'POST',
+  body: formData
+})
+.then(response => {
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return response.json();
+})
+.then(data => {
+  console.log('Success:', data);
+})
+.catch(error => {
+  console.error('Error:', error);
+});
+                            </pre></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- BANNER / VIDEO UPLOAD (HAKUNA BADILIKO) -->
+        <!-- ============================================ -->
+        <div class="home-banner">
+            <div class="bannerContainer home-banner1">
+                <h1 class="home-banner-heading heading2">Protect Your Integrity and Privacy</h1>
+                <span class="home-banner-sub-heading bodySmall">
+                    Our cutting-edge DeepFake detection tool uses state-of-the-art algorithms to safeguard your digital identity and reputation. With our intuitive interface and powerful features, you can trust that your content is secure from malicious alterations. Join us in the fight against misinformation and deception.
+                </span>
+                <div id="video-upload-container">
+                    <video width="100%" controls id="videos" style="max-height:50vh; width:auto;">
+                        <source src="" id="video_source" />
+                        Your browser does not support HTML5 video.
+                    </video>
+                    <form class="form" method="POST" enctype="multipart/form-data" name="video-upload" id="video-upload" class="text-center mt-5">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label>{{ form.upload_video_file.widget }}</label>
+                            {{ form.upload_video_file }} <br />
+                            {% if form.upload_video_file.errors %}
+                                <br />
+                                {% for each_error in form.upload_video_file.errors %}
+                                    <div class="alert alert-danger mt-1 {{ form.upload_video_file.id_for_label }}">{{ each_error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.sequence_length.id_for_label }}">{{ form.sequence_length.label }}: </label>
+                            <span id="slider-value"></span>
+                            <input type="number" hidden="hidden" id="{{ form.sequence_length.id_for_label }}" name="{{ form.sequence_length.name }}" />
+                            <div id="slider"></div>
+                            {% if form.sequence_length.errors %}
+                                <br />
+                                {% for each_error in form.sequence_length.errors %}
+                                    <div class="alert alert-danger mt-1 {{ form.sequence_length.id_for_label }}">{{ each_error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <input id="videoUpload" type="submit" name="submit" value="Upload" class="btn btn-success mt-3 btn-block" />
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- FAQ (HAKUNA BADILIKO) -->
+        <!-- ============================================ -->
+        <div class="home-faq" id="faq-section">
+            <div class="faqContainer">
+                <div class="home-faq1">
+                    <div class="home-container26">
+                        <span class="overline">FAQ</span>
+                        <h2 class="home-text82 heading2">Frequently Asked Questions</h2>
+                        <span class="home-text83 bodyLarge">Quick answers to the most common queries about our platform.</span>
+                    </div>
+                    <div class="home-container27">
+                        <div class="question1-container">
+                            <span class="question1-text heading3">What exactly is DeepFake technology?</span>
+                            <span class="bodySmall">DeepFake technology leverages artificial intelligence to generate hyper‑realistic but synthetic media, often used to impersonate individuals or fabricate events.</span>
+                        </div>
+                        <div class="question1-container">
+                            <span class="question1-text heading3">How does the detection engine actually work?</span>
+                            <span class="bodySmall">Our detection engine applies state‑of‑the‑art machine learning models to analyze video and image frames for subtle inconsistencies, noise patterns, and other forensic markers of manipulation.</span>
+                        </div>
+                        <div class="question1-container">
+                            <span class="question1-text heading3">Is the DeepFake Detection tool 100% accurate?</span>
+                            <span class="bodySmall">While the DeepFake Detection tool is highly effective, no detection method is foolproof. It is important to use additional verification methods when dealing with potentially manipulated media.</span>
+                        </div>
+                        <div class="question1-container">
+                            <span class="question1-text heading3">Can the DeepFake Detection tool be used for real-time detection?</span>
+                            <span class="bodySmall">The DeepFake Detection tool can be optimized for real-time detection in certain scenarios, but it may require significant computational resources depending on the complexity of the analysis.</span>
+                        </div>
+                        <div class="question1-container">
+                            <span class="question1-text heading3">Is the DeepFake Detection tool user-friendly?</span>
+                            <span class="bodySmall">Yes, the DeepFake Detection tool is designed with a user-friendly interface that makes it easy for users to upload and analyze media for potential DeepFake content.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- FOOTER (HAKUNA BADILIKO) -->
+        <!-- ============================================ -->
+        <div class="home-footer">
+            <footer class="footerContainer home-footer1">
+                <div class="home-separator"></div>
+                <div class="home-container29">
+                    <span class="bodySmall home-text86">© 2026 DETECTIFY Labs 🛡️ | Securing Digital Integrity & AI Trust 🤖
+All Rights Reserved. Developed by Cybersecurity First Year Professional 🎓</span>
+                    <div class="home-icon-group1">
+                        <svg viewBox="0 0 950.8571428571428 1024" class="home-icon10 socialIcons"><path d="M925.714 233.143c-25.143 36.571-56.571 69.143-92.571 95.429 0.571 8 0.571 16 0.571 24 0 244-185.714 525.143-525.143 525.143-104.571 0-201.714-30.286-283.429-82.857 14.857 1.714 29.143 2.286 44.571 2.286 86.286 0 165.714-29.143 229.143-78.857-81.143-1.714-149.143-54.857-172.571-128 11.429 1.714 22.857 2.857 34.857 2.857 16.571 0 33.143-2.286 48.571-6.286-84.571-17.143-148-91.429-148-181.143v-2.286c24.571 13.714 53.143 22.286 83.429 23.429-49.714-33.143-82.286-89.714-82.286-153.714 0-34.286 9.143-65.714 25.143-93.143 90.857 112 227.429 185.143 380.571 193.143-2.857-13.714-4.571-28-4.571-42.286 0-101.714 82.286-184.571 184.571-184.571 53.143 0 101.143 22.286 134.857 58.286 41.714-8 81.714-23.429 117.143-44.571-13.714 42.857-42.857 78.857-81.143 101.714 37.143-4 73.143-14.286 106.286-28.571z"></path></svg>
+                        <svg viewBox="0 0 877.7142857142857 1024" class="home-icon12 socialIcons"><path d="M585.143 512c0-80.571-65.714-146.286-146.286-146.286s-146.286 65.714-146.286 146.286 65.714 146.286 146.286 146.286 146.286-65.714 146.286-146.286zM664 512c0 124.571-100.571 225.143-225.143 225.143s-225.143-100.571-225.143-225.143 100.571-225.143 225.143-225.143 225.143 100.571 225.143 225.143zM725.714 277.714c0 29.143-23.429 52.571-52.571 52.571s-52.571-23.429-52.571-52.571 23.429-52.571 52.571-52.571 52.571 23.429 52.571 52.571zM438.857 152c-64 0-201.143-5.143-258.857 17.714-20 8-34.857 17.714-50.286 33.143s-25.143 30.286-33.143 50.286c-22.857 57.714-17.714 194.857-17.714 258.857s-5.143 201.143 17.714 258.857c8 20 17.714 34.857 33.143 50.286s30.286 25.143 50.286 33.143c57.714 22.857 194.857 17.714 258.857 17.714s201.143 5.143 258.857-17.714c20-8 34.857-17.714 50.286-33.143s25.143-30.286 33.143-50.286c22.857-57.714 17.714-194.857 17.714-258.857s5.143-201.143-17.714-258.857c-8-20-17.714-34.857-33.143-50.286s-30.286-25.143-50.286-33.143c-57.714-22.857-194.857-17.714-258.857-17.714zM877.714 512c0 60.571 0.571 120.571-2.857 181.143-3.429 70.286-19.429 132.571-70.857 184s-113.714 67.429-184 70.857c-60.571 3.429-120.571 2.857-181.143 2.857s-120.571 0.571-181.143-2.857c-70.286-3.429-132.571-19.429-184-70.857s-67.429-113.714-70.857-184c-3.429-60.571-2.857-120.571-2.857-181.143s-0.571-120.571 2.857-181.143c3.429-70.286 19.429-132.571 70.857-184s113.714-67.429 184-70.857c60.571-3.429 120.571-2.857 181.143-2.857s120.571-0.571 181.143 2.857c70.286 3.429 132.571 19.429 184 70.857s67.429 113.714 70.857 184c3.429 60.571 2.857 120.571 2.857 181.143z"></path></svg>
+                        <svg viewBox="0 0 602.2582857142856 1024" class="home-icon14 socialIcons"><path d="M548 6.857v150.857h-89.714c-70.286 0-83.429 33.714-83.429 82.286v108h167.429l-22.286 169.143h-145.143v433.714h-174.857v-433.714h-145.714v-169.143h145.714v-124.571c0-144.571 88.571-223.429 217.714-223.429 61.714 0 114.857 4.571 130.286 6.857z"></path></svg>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Loader (hidden) -->
+    <div class="loader" style="display:none;">
+        <p id="is_splitted"></p>
+    </div>
+
+   <!-- ============================================ -->
+<!-- SCRIPTS -->
+<!-- ============================================ -->
+<script data-section-id="navbar" src="https://unpkg.com/@teleporthq/teleport-custom-scripts"></script>
+<script src="{% static 'js/script.js' %}"></script>
+
+<!-- Mobile menu toggle -->
+<script>
+    function toggleMobileMenu() {
+        const menu = document.getElementById('mobileMenu');
+        if (menu) {
+            menu.classList.toggle('active');
+        }
+    }
+    // Close mobile menu on outside click
+    document.addEventListener('click', function(event) {
+        const menu = document.getElementById('mobileMenu');
+        const burger = document.querySelector('.home-burger-menu');
+        if (menu && burger && menu.classList.contains('active') && !menu.contains(event.target) && !burger.contains(event.target)) {
+            menu.classList.remove('active');
+        }
+    });
+</script>
+
+<!-- Slider script -->
+<script>
+    $(function() {
+        var sliderSequenceNumbers = [10, 20, 40, 60, 80, 100];
+        var slider = $("div#slider").slider({
+            value: 1,
+            min: 0,
+            max: sliderSequenceNumbers.length - 1,
+            slide: function(event, ui) {
+                $("#{{ form.sequence_length.id_for_label }}").val(sliderSequenceNumbers[ui.value]);
+                $("#slider-value").html(sliderSequenceNumbers[ui.value]);
+            }
+        });
+        $("#{{ form.sequence_length.id_for_label }}").val(sliderSequenceNumbers[$("#slider").slider("value")]);
+        $("#slider-value").html(sliderSequenceNumbers[$("#slider").slider("value")]);
+    });
+</script>
+
+<!-- Scroll functions – Rekebisha HAPA -->
+<script>
+    function scrollToForm() {
+        var el = document.getElementById('video-upload-container');
+        if (el) {
+            el.scrollIntoView({ behavior: 'smooth' });
+        } else {
+            console.warn('video-upload-container not found');
+        }
+    }
+
+    function scrollToGuide() {
+        var el = document.getElementById('guide-section');
+        if (el) {
+            el.scrollIntoView({ behavior: 'smooth' });
+        } else {
+            console.warn('guide-section not found');
+        }
+    }
+
+    function scrollToFAQ() {
+        var el = document.getElementById('faq-section');
+        if (el) {
+            el.scrollIntoView({ behavior: 'smooth' });
+        } else {
+            console.warn('faq-section not found');
+        }
+    }
+
+    // (Imeondolewa ile ya 'scrollTo? API Integration' – haikuhitajika)
+</script>
+
+<!-- ============================================ -->
+<!-- ADDITIONAL SCRIPTS (Particles, Counters, Price) -->
+<!-- ============================================ -->
+<script>
+    // ========== PARTICLES ==========
+    (function createParticles() {
+        var hero = document.querySelector('.heroContainer');
+        if (!hero) return;
+        var container = document.createElement('div');
+        container.className = 'particles';
+        for (var i = 0; i < 30; i++) {
+            var dot = document.createElement('div');
+            dot.className = 'particle';
+            dot.style.left = Math.random() * 100 + '%';
+            dot.style.animationDelay = Math.random() * 8 + 's';
+            dot.style.animationDuration = (6 + Math.random() * 6) + 's';
+            dot.style.width = (2 + Math.random() * 4) + 'px';
+            dot.style.height = dot.style.width;
+            container.appendChild(dot);
+        }
+        hero.appendChild(container);
+    })();
+
+    // ========== STATS COUNTERS ==========
+    document.addEventListener('DOMContentLoaded', function() {
+        var counters = document.querySelectorAll('.stat-number');
+        if (!counters.length) return;
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    var counter = entry.target;
+                    var target = parseFloat(counter.getAttribute('data-target'));
+                    var isFloat = target % 1 !== 0;
+                    var current = 0;
+                    var increment = target / 50;
+                    var updateCounter = function() {
+                        current += increment;
+                        if (current >= target) {
+                            counter.textContent = isFloat ? target.toFixed(1) : Math.round(target);
+                            return;
+                        }
+                        counter.textContent = isFloat ? current.toFixed(1) : Math.round(current);
+                        requestAnimationFrame(updateCounter);
+                    };
+                    updateCounter();
+                    observer.unobserve(counter);
+                }
+            });
+        }, { threshold: 0.5 });
+        counters.forEach(function(c) { observer.observe(c); });
+    });
+
+    // ========== PRICE COUNTER (Pamoja na Glow) ==========
+    document.addEventListener('DOMContentLoaded', function() {
+        var priceElement = document.querySelector('.home-free-plan-price');
+        if (!priceElement) return;
+
+        var target = parseFloat(priceElement.textContent.replace(/,/g, '')) || 0;
+        var isFloat = true;
+        var current = 0;
+        var steps = 40;
+        var count = 0;
+        var animated = false;
+
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting && !animated) {
+                    animated = true;
+                    var interval = setInterval(function() {
+                        count++;
+                        var value = (count / steps) * target;
+                        if (count >= steps) {
+                            clearInterval(interval);
+                            value = target;
+                            priceElement.style.animation = 'priceGlow 2s ease-in-out infinite';
+                        }
+                        priceElement.textContent = value.toFixed(2);
+                    }, 30);
+                    observer.unobserve(priceElement);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        observer.observe(priceElement);
+    });
+</script>
+
+<!-- Add priceGlow CSS if not already defined -->
+<style>
+    @keyframes priceGlow {
+        0%, 100% { text-shadow: 0 0 10px rgba(0, 170, 255, 0.2); }
+        50% { text-shadow: 0 0 30px rgba(0, 170, 255, 0.6), 0 0 60px rgba(0, 170, 255, 0.3); }
+    }
+</style>
+
+</body>
+</html>

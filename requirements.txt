@@ -1,0 +1,33 @@
+# Web Framework
+Django>=5.0
+asgiref>=3.7.2
+sqlparse>=0.4.4
+
+# Deep Learning (CPU-only)
+torch>=2.1.2
+torchvision>=0.16.2
+
+# Image Processing
+opencv-python>=4.8.1.78
+Pillow>=10.1.0
+
+# Data Processing
+numpy>=1.26.2
+pandas>=2.1.4
+
+# Visualization
+matplotlib>=3.8.2
+
+# Utilities
+requests>=2.31.0
+tqdm>=4.66.1
+python-dotenv>=1.0.0
+PyYAML>=6.0.1
+
+# Security
+bleach>=6.1.0
+cryptography>=41.0.0
+
+# Jupyter (Optional - kwa testing)
+# jupyterlab>=4.0.9
+# notebook>=7.0.6
