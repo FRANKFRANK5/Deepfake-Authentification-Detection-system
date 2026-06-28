@@ -22,7 +22,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', '@)0qp0!&-vht7k0wyuihr+nk-b8zrvb5j^1d@
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 # Change and set this to correct IP/Domain
-ALLOWED_HOSTS = ['detectify.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['detectify.onrender.com', 'localhost', '127.0.0.1', 'detectify.onrender.com']
 
 
 # Application definition
