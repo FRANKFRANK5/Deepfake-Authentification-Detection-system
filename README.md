@@ -1,39 +1,76 @@
+# 🧠 Deepfake Authentification Detection System
 
-The growing computation power has made the deep learning algorithms so powerful that creating an indistinguishable human synthesized video popularly called as deep fakes have become very simple. Scenarios where this realistic face swapped deep fakes are used to create political distress, fake terrorism events, blackmail peoples are easily envisioned. In this work, we describe a new deep learning-based method that can effectively distinguish AI-generated fake videos from real videos. Our method is capable of automatically detecting the replacement and reenactment deep fakes. Our system uses a Res-Next Convolution neural network to extract the frame- level features and these features and further used to train the Long-Short-Term Memory (LSTM) based Recurrent Neural Network (RNN) to classify whether the video is subject to any kind of manipulation or not, i.e. whether the video is deep fake or real video. To emulate the real time scenarios and make the model perform better on real time data, we evaluate our method on large amount of balanced and mixed data-set prepared by mixing the various available data-set like Face-Forensic++, Deepfake detection challenge, and Celeb-DF.
+[![Python Version](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/)
+[![Django Version](https://img.shields.io/badge/django-6.0-green.svg)](https://www.djangoproject.com/)
+[![License](https://img.shields.io/badge/license-MIT-purple.svg)](LICENSE)
 
-# How to Run
-
-1. Open Terminal or Command prompt from the location where you want to set the project.
-2. Now run the following command,
-> git clone https://github.com/subhanSahebShaik/detectify.git
-
-It only works if Git installed in your system, else download zip file manually from GitHub and extract it into desired location.
-
-3. Create a 'models', 'uploaded_videos' and 'uploaded_images' directories at root folder.
-
-4. Now download the models from G-Drive then copy them into models folder created earlier https://drive.google.com/drive/folders/1UX8jXUXyEjhLLZ38tcgOwGsZ6XFSLDJ-?usp=sharing
-
-5. Now run,
-
-Creating Virtual evnironment is Optional but recommended
-> python -m venv venv
-> venv\Scripts activate
-
-Following command will install all project required libraries
-> pip install -r requirements.txt
-
-6. Now run server,
-> python manage.py runserver
-
-7. Now local server is ready. Open any browser and visit http://127.0.0.1:8000/
-
-# Special Thanks To
-
-I would like to express my special thanks to [abhijitjadhav1998/Deepfake_detection_using_deep_learning](https://github.com/abhijitjadhav1998/Deepfake_detection_using_deep_learning) repository for providing valuable insights and inspiration for this project. The code and ideas presented in this repository served as a foundation and guide for developing our deep learning-based method to detect AI-generated fake videos.
+> AI-powered system to detect deepfake videos using deep learning.
 
 ---
 
-[![Original Repository](https://img.shields.io/badge/Original%20Repository-abhijitjadhav1998/Deepfake_detection_using_deep_learning-blue?logo=github)](https://github.com/abhijitjadhav1998/Deepfake_detection_using_deep_learning)
-=======
-# Deepfake-Authentification-Detection-system
->>>>>>> 4b488789f18c3569130690235ca5376026b018ac
+## 📌 Overview
+
+This project uses a **Res-NeXt CNN + LSTM RNN** model to distinguish AI-generated deepfake videos from real ones. It provides a web interface for user authentication, video/image upload, and real-time detection results.
+
+---
+
+## ✨ Features
+
+- 🔐 User registration, login & logout with CSRF protection  
+- 🎥 Upload videos or images for deepfake analysis  
+- 🤖 AI detection using Res-NeXt + LSTM  
+- 📊 Dashboard with detection history  
+- 📱 Fully responsive design  
+
+---
+
+## 🛠️ Tech Stack
+
+- **Backend:** Django 6.0 (Python 3.11)  
+- **Database:** SQLite3  
+- **Frontend:** HTML5, CSS3, JavaScript  
+- **AI/ML:** Res-NeXt CNN, LSTM RNN  
+
+---
+
+## 🚀 Quick Setup
+
+```bash
+git clone https://github.com/FRANKFRANK5/Deepfake-Authentification-Detection-system.git
+cd Deepfake-Authentification-Detection-system
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Migrate database
+python manage.py migrate
+
+# Run server
+python manage.py runserver
+
+Visit http://127.0.0.1:8000/ to start using the system.
+📂 Project Structure
+text
+
+├── project_settings/       # Django settings & URLs
+├── ml_app/                 # Main application logic
+├── templates/              # HTML templates
+├── static/                 # CSS, JS, images
+├── media/                  # User-uploaded files
+├── models/                 # Pretrained AI models
+├── uploaded_videos/        # Uploaded videos
+└── uploaded_images/        # Uploaded images
+
+🙏 Credits
+
+Special thanks to abhijitjadhav1998/Deepfake_detection_using_deep_learning for the foundational research and code.
+📝 License
+
+MIT License – see LICENSE for details.
+📧 Contact
+
+GitHub: FRANKFRANK5
