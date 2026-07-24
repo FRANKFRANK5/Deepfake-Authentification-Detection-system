@@ -29,7 +29,9 @@ This project uses a **Res-NeXt CNN + LSTM RNN** model to distinguish AI-generate
 - **Backend:** Django 6.0 (Python 3.11)  
 - **Database:** SQLite3  
 - **Frontend:** HTML5, CSS3, JavaScript  
-- **AI/ML:** Res-NeXt CNN, LSTM RNN  
+- **AI/ML:** Res-NeXt CNN, LSTM RNN
+- **project link:** https://detectify-ywlk.onrender.com/
+- **NOTE:**  Link kan take 5-10 second to open the website
 
 ---
 
